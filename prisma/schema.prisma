@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,18 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Gender {
-  FEMALE
-  MALE
-  UNKNOWN
-}
-
 model User {
   id              String         @id @default(cuid())
   username        String         @unique
   nickname        String
   password        String
-  roles           UsersOnRoles[]
   gender          Gender
   locked          Boolean        @default(false)
   enabled         Boolean        @default(true)
@@ -29,6 +19,7 @@ model User {
   updated_time    DateTime       @default(now())
   last_login_ip   String
   last_login_time DateTime       @default(now())
+  roles           UsersOnRoles[]
 }
 
 model Role {
@@ -41,10 +32,16 @@ model Role {
 }
 
 model UsersOnRoles {
-  user   User   @relation(fields: [userId], references: [id])
   userId String
-  role   Role   @relation(fields: [roleId], references: [id])
   roleId Int
+  role   Role   @relation(fields: [roleId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   @@id([userId, roleId])
+}
+
+enum Gender {
+  FEMALE
+  MALE
+  UNKNOWN
 }
